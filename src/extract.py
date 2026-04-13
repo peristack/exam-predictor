@@ -2,6 +2,25 @@ import pdfplumber
 import pandas as pd
 import os
 import re
+def fix_encoding(text):
+    replacements = {
+        'B': 'ti',
+        'Bempo': 'tiempo',
+        'Bene': 'tiene',
+        'ConsBtución': 'Constitución',
+        'consBtución': 'constitución',
+        'obje Bvos': 'objetivos',
+        'objeBvos': 'objetivos',
+        'OperaBva': 'Operativa',
+        'operaBva': 'operativa',
+        'habilitaBón': 'habilitación',
+        'artículo': 'artículo',
+        'armculo': 'artículo',
+        'Berra': 'tierra',
+    }
+    for wrong, right in replacements.items():
+        text = text.replace(wrong, right)
+    return text
 
 def extract_questions_from_pdf(pdf_path, year):
     questions = []
@@ -12,6 +31,7 @@ def extract_questions_from_pdf(pdf_path, year):
             text = page.extract_text()
             if text:
                 full_text += text + "\n"
+                full_text = fix_encoding(full_text)
     
     blocks = re.split(r'\n(?=\d+[\.\-]{1,2}\s)', full_text)
     
